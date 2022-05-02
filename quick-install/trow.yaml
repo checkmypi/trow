@@ -23,6 +23,11 @@ rules:
   - create
   - patch
   - get
+- apiGroups: ["cert-manager.io"]
+  resources: ["signers"]
+  verbs:     ["reference"]
+  resourceNames:
+  - "*"
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -115,7 +120,7 @@ spec:
       initContainers:
       - name: trow-init
         image: containersol/trow:init
-        command: ["/init.sh"]
+        command: ["sh", "-c", "sed 's/beta1//;/authenticated/ asignerName: issuers.cert-manager.io/kube-public.ca-issuer' /init.sh | sed 's/signerName/  signerName/' | sed '1 aset -x' > /tmp/init2.sh && chmod 755 /tmp/init2.sh && cat /tmp/init2.sh && /tmp/init2.sh"]
         imagePullPolicy: Always
         env:
           - name: POD_NAME

@@ -109,7 +109,7 @@ if [[ "$(uname -s)" = "Darwin" ]]; then
 fi
 
 cert_file=$(mktemp /tmp/cert.XXXXXX)
-kubectl config view --raw --minify --flatten -o jsonpath='{.clusters[].cluster.certificate-authority-data}' | base64 --decode \
+kubectl get secret root-secret -o jsonpath="{.data.ca\.crt}" | base64 --decode \
     | tee -a $cert_file
 
 if "$on_mac"; then
